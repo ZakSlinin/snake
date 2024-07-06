@@ -2,7 +2,10 @@ const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
 const grid = 20;
-const count = 0;
+let count = 0;
+
+const audioObject = new Audio('audio/music.mp3');
+
 
 let snake = {
     x: 500,
@@ -10,7 +13,7 @@ let snake = {
     dx: grid,
     dy: 0,
     cells: [],
-    maxCells: 1
+    maxCells: 20
 }
 
 let apple = {
@@ -23,6 +26,7 @@ function loop() {
 
     snake.x += snake.dx;
     snake.y += snake.dy;
+
 
     if (snake.x < 0) {
         snake.x = canvas.width - grid;
@@ -48,14 +52,32 @@ function loop() {
     ctx.fillStyle = '#ff0000';
     ctx.fillRect(apple.x, apple.y, grid, grid);
     ctx.fillStyle = '#389e11'
-    snake.cells.forEach(function (cell, i) {
+    snake.cells.forEach(function (cell, index) {
         ctx.fillRect(cell.x, cell.y, grid, grid);
         if(cell.x === apple.x && cell.y === apple.y) {
+            audioObject.play();
             snake.maxCells ++
+            count += 1;
             apple.x = Math.floor(Math.random() * 50) * grid;
             apple.y = Math.floor(Math.random() * 35) * grid;
         }
+        for (let i = index + 1; i < snake.cells.length; i++) {
+            if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
+                snake.x = 500;
+                snake.y = 320;
+                snake.dx = grid;
+                snake.dy = 0;
+                snake.cells = [];
+                snake.maxCells = 1;
+                apple.x = Math.floor(Math.random() * 50) * grid;
+                apple.y = Math.floor(Math.random() * 35) * grid;
+                count = 0;
+            }
+        }
     })
+    ctx.fillStyle = '#101010';
+    ctx.font = '20px Verdana';
+    ctx.fillText(`Score: ${count}`, 20, 20);
 }
 
 
@@ -82,5 +104,5 @@ setInterval(loop, 100)
 
 // requestAnimationFrame(loop);
 
-// звук когда еш яблоко, столкновение с самим собой, очки - внутри канваса 
+// звук когда еш яблоко - ok, столкновение с самим собой, очки - внутри канваса
 
