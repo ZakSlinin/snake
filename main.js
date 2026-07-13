@@ -4,7 +4,7 @@ const ctx = canvas.getContext('2d');
 const grid = 20;
 let count = 0;
 
-const audioObject = new Audio('БрБр ээ.m4a');
+const audioObject = new Audio('Брбр ээ.m4a');
 
 
 let snake = {
