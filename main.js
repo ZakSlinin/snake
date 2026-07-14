@@ -1,29 +1,25 @@
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
+const scoreEl = document.querySelector('#score')
 
-const grid = 20;
 let count = 0;
 
-const audioObject = new Audio('Брбр ээ.m4a');
+const audioObject = new SoundPlayer('Брбр ээ.m4a')
 
+function playSound() {
+    audioObject.play(1, 1.3)
+}
 
+const grid = 20
 let snake = {
-    x: 500,
-    y: 320,
-    dx: grid,
-    dy: 0,
-    cells: [],
-    maxCells: 20
+    x: 300, y: 320, dx: grid, dy: 0, cells: [], maxCells: 3
 }
 
 let apple = {
-    x: 100,
-    y: 100
+    x: 600, y: 320
 }
 
 function loop() {
-    // requestAnimationFrame(loop);
-
     snake.x += snake.dx;
     snake.y += snake.dy;
 
@@ -40,8 +36,7 @@ function loop() {
     }
 
     snake.cells.unshift({
-        x: snake.x,
-        y: snake.y
+        x: snake.x, y: snake.y
     })
     if (snake.cells.length > snake.maxCells) {
         snake.cells.pop()
@@ -54,55 +49,78 @@ function loop() {
     ctx.fillStyle = '#389e11'
     snake.cells.forEach(function (cell, index) {
         ctx.fillRect(cell.x, cell.y, grid, grid);
-        if(cell.x === apple.x && cell.y === apple.y) {
-            audioObject.play();
-            snake.maxCells ++
+        if (cell.x === apple.x && cell.y === apple.y) {
+            playSound()
+            snake.maxCells++
             count += 1;
             apple.x = Math.floor(Math.random() * 50) * grid;
             apple.y = Math.floor(Math.random() * 35) * grid;
         }
         for (let i = index + 1; i < snake.cells.length; i++) {
             if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
-                snake.x = 500;
-                snake.y = 320;
-                snake.dx = grid;
-                snake.dy = 0;
-                snake.cells = [];
-                snake.maxCells = 1;
-                apple.x = Math.floor(Math.random() * 50) * grid;
-                apple.y = Math.floor(Math.random() * 35) * grid;
-                count = 0;
+                restart()
+                return
             }
         }
     })
     ctx.fillStyle = '#101010';
-    ctx.font = '20px Verdana';
-    ctx.fillText(`Score: ${count}`, 20, 20);
+
+    scoreEl.textContent = `Score: ${count}`
 }
 
-
-
-document.addEventListener('keydown', function (e) {
-    console.log(e.code, snake.dx, snake.dy)
-    if (e.code === 'ArrowLeft' && snake.dx === 0) {
-        snake.dx = -grid;
-        snake.dy = 0;
-    } else if (e.code === 'ArrowUp' && snake.dy === 0) {
+function moveUp() {
+    if (snake.dy === 0) {
         snake.dx = 0;
         snake.dy = -grid;
-    } else if (e.code === 'ArrowRight' && snake.dx === 0) {
-        snake.dx = grid;
-        snake.dy = 0;
-    } else if (e.code === 'ArrowDown' && snake.dy === 0) {
+    }
+}
+
+function moveDown() {
+    if (snake.dy === 0) {
         snake.dx = 0;
         snake.dy = grid;
     }
+}
+
+function moveLeft() {
+    if (snake.dx === 0) {
+        snake.dx = -grid;
+        snake.dy = 0;
+    }
+}
+
+function moveRight() {
+    if (snake.dx === 0) {
+        snake.dx = grid;
+        snake.dy = 0;
+    }
+}
+
+document.addEventListener('keydown', function (e) {
+    if (e.code === 'ArrowLeft') {
+        moveLeft()
+    } else if (e.code === 'ArrowUp') {
+        moveUp()
+    } else if (e.code === 'ArrowRight') {
+        moveRight()
+    } else if (e.code === 'ArrowDown') {
+        moveDown()
+    }
 })
 
+function restart() {
+    snake = {
+        x: 300, y: 320, dx: grid, dy: 0, cells: [], maxCells: 3
+    }
 
-setInterval(loop, 100)
+    apple = {
+        x: 600, y: 320
+    }
 
-// requestAnimationFrame(loop);
+    count = 0
 
-// звук когда еш яблоко - ok, столкновение с самим собой, очки - внутри канваса
+    clearInterval(gameLoop)
+    gameLoop = setInterval(loop, 100)
+}
 
+let gameLoop = setInterval(loop, 100)

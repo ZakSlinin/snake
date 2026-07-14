@@ -1,18 +1,48 @@
 * {
-    padding: 0;
-    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 body {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100vw;
-    height: 100vh;
-    overflow: scroll;
+    width: 100%;
+    overflow: hidden;
+    gap: 1rem;
+}
+
+.game-info {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+    justify-self: flex-start;
+    justify-content: space-between;
+    margin-top: 2dvh;
+    padding: 1rem 2rem;
+    background: #ededed;
+    border-radius: 18px;
+    border: none;
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    p {
+        font-size: 2rem;
+    }
 }
 
 canvas {
+    width: 100%;
     border: 1px solid black;
-    overflow: scroll;
+    overflow: hidden;
+    background: #ededed;
 }
